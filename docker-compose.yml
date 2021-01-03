@@ -18,10 +18,15 @@ services:
                 - AIRFLOW__WEBSERVER__SECRET_KEY=${SECRET_KEY}
                 - DEFAULT_USER=${DEFAULT_USER}
                 - DEFAULT_PASSWORD=${DEFAULT_PASSWORD}
+                - LADDR_DB_USER=${LADDR_DB_USER}
+                - LADDR_DB_PASS=${LADDR_DB_PASS}
         command: >
             /bin/bash -c "
                 # Wait for PG
                 sleep 5
+
+                # Copy in .Rprofile to user's home dir
+                cp .Rprofile ~/
 
                 # Clean up pid
                 rm -f airflow-webserver.pid

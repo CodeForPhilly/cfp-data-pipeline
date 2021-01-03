@@ -1,3 +1,10 @@
+# R
+.Rhistory
+.Renviron
+
+# Vim swapfiles
+.*.sw[op]
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -139,3 +146,4 @@ airflow/airflow-webserver.pid
 
 # Unittests are personal
 unittests.cfg
+.Rproj.user
