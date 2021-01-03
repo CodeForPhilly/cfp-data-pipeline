@@ -1,0 +1,13 @@
+description: "Code for Philly analyses demo"
+schedule_interval: "0 0 * * *"
+default_args:
+    owner: John Templeton
+    depends_on_past: False
+    start_date: !days_ago 1
+    email: john@gusty.com
+    email_on_failure: False
+    email_on_retry: False
+    retries: 1
+    retry_delay: !timedelta 'minutes: 5'
+    sla: !timedelta 'hours: 2'
+

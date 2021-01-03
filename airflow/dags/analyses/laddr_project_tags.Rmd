@@ -1,0 +1,45 @@
+---
+operator: local.RmdOperator
+dependencies:
+  - laddr_db
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(tidyr)
+library(snakecase)
+```
+
+
+```{r}
+prefix_names <- function(tbl, prefix) {
+  rename_all(tbl, ~ paste0(prefix, .))
+}
+
+tbl_view_project_tags <-
+  cfp_laddr_tag_items() %>%
+  filter(ContextClass == "Laddr\\Project") %>%
+  select(-ContextClass, ProjectID = ContextID) %>%
+  rename_at(vars(-TagID, -ProjectID), ~paste0("TagItem", .)) %>%
+  inner_join(
+    cfp_laddr_tags() %>%
+      select(ID, Title, Handle) %>%
+      prefix_names("Tag"),
+    c("TagID" = "TagID")
+  ) %>%
+  rename_all(to_snake_case) %>%
+  select(project_id, tag_id, tag_item_creator_id, tag_title, everything()) %>%
+  collect() %>%
+  # NOTE: expects entries like topic.cycling, but sometimes left is missing
+  separate(
+    tag_handle, c("tag_type", "tag_name"), sep = "\\.",
+    extra = "merge", remove = FALSE, fill = "left"
+    )
+```
+
+```{r}
+tbl_view_project_tags %>% cfp_create_table("views.laddr_project_tags")
+```

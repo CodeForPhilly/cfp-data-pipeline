@@ -1,0 +1,50 @@
+---
+operator: local.RmdOperator
+---
+
+tl;dr:
+
+* Out of the 20 projects created in the past year, half have 2 or fewer tags.
+* Only a few tags are used more than once.
+* Identifying a subset of useful tags, or creating a binning strategy, would let us make simple project recommendations (that don't require users reading through many options).
+
+```{r, include = FALSE}
+library(tidyverse)
+library(dbplyr)
+library(dbpath)
+library(glue)
+
+DEBUG = FALSE
+
+knitr::opts_chunk$set(echo = FALSE, comment = "")
+```
+
+```{r}
+url <- glue("mysql://{Sys.getenv('LADDR_DB_USER')}:{Sys.getenv('LADDR_DB_PASS')}@poplar.phl.io:3306/code-for-philly")
+src_con <- DBI::dbConnect(dbpath(url))
+
+# Create laddr schema in datawarehouse
+cfp_execute(
+  glue("CREATE SCHEMA IF NOT EXISTS laddr AUTHORIZATION {Sys.getenv('DEFAULT_USER')};")
+  )
+```
+
+
+```{r}
+tbl_projects <- tbl(src_con, "projects")
+tbl_project_updates <- tbl(src_con, "project_updates")
+tbl_tags <- tbl(src_con, "tags")
+tbl_tag_items <- tbl(src_con, "tag_items")
+tbl_people <- tbl(src_con, "people") %>%
+  select(ID, CreatorID, Created, Modified, ModifierID, Username)
+```
+
+
+```{r}
+tbl_projects %>% cfp_create_table("laddr.projects")
+tbl_project_updates %>% cfp_create_table("laddr.project_updates")
+tbl_tags %>% cfp_create_table("laddr.tags")
+tbl_tag_items %>% cfp_create_table("laddr.tag_items")
+tbl_people %>% cfp_create_table("laddr.people")
+
+```

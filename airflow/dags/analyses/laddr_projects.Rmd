@@ -1,0 +1,20 @@
+---
+operator: local.RmdOperator
+dependencies:
+  - laddr_db
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r}
+library(snakecase)
+
+tbl_view_projects <-
+  cfp_laddr_projects() %>%
+  rename_all(to_snake_case)
+```
+
+```{r}
+tbl_view_projects %>% cfp_create_table("views.laddr_projects")
+```

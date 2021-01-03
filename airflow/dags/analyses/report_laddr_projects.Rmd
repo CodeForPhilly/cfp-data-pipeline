@@ -1,0 +1,161 @@
+---
+operator: local.RmdOperator
+dependencies:
+  - laddr_project_tags
+  - laddr_projects
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+
+preview <- function(df, n = 5) df %>% head(n) %>% collect() %>% View()
+
+```
+
+
+First, we'll view all 20 projects created since August 1st, 2019.
+
+```{r}
+recent_projects <- cfp_views_laddr_projects() %>% filter(created >= "2019-08-01")
+
+```
+
+We can also count up the stages projects are on.
+This information is not something we've focused much on, so is likely out of date for most projects.
+
+```{r}
+stage_order <- c("Commenting", "Bootstrapping", "Prototyping", "Testing", "Maintaining", "Hibernating")
+recent_projects %>%
+  collect() %>%
+  mutate(stage = fct_relevel(stage, stage_order)) %>%
+  ggplot(aes(stage)) +
+  geom_bar() +
+  labs(title = "Projects at each stage")
+#count(Stage) %>% collect() %>% knitr::kable()
+```
+
+
+## General Tagging
+
+Tags come in three types: tech, topic, and event.
+In this section, we'll look at tagging across these types, while the next will look more closely within tag types.
+
+```{r}
+project_tags_enriched <- 
+  cfp_views_laddr_project_tags() %>%
+  inner_join(
+    recent_projects %>% select(id, project_title = title),
+    c("project_id" = "id")
+    )
+```
+
+### How many tags do projects have?
+
+Some projects appear to have a ton of tags (e.g. 17!), while it looks like half the projects have 2 or less.
+
+```{r}
+project_tags_enriched %>%
+  count(project_title, tag_type, sort = TRUE) %>%
+  collect() %>%
+  complete(project_title, tag_type, fill = list(n = 0)) %>%
+  mutate(
+    project_title = fct_reorder(project_title, n, sum),
+    n = as.integer(n)
+    ) %>%
+  ggplot(aes(project_title, n, fill = tag_type)) + geom_col() + coord_flip() +
+  labs(titlie = "Number of tags per project")
+```
+
+
+### Most tags are used once
+
+The plot below shows how often tech or topic tags are used on the most recent projects.
+
+```{r}
+project_tags_enriched %>%
+  collect() %>%
+  count(tag_type, tag_title, sort = TRUE) %>%
+  mutate(tag_title = fct_reorder(tag_title, n, .desc = TRUE)) %>%
+  filter(tag_type != "event") %>%
+  ggplot(aes(tag_title, n, group = 1)) +
+  geom_line() +
+  expand_limits(y = 0) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  facet_wrap(~ tag_type, ncol = 1, scales = "free_x") +
+  labs(title = "How often is each tag used? (not often)")
+```
+
+Notice how python is tagged the most, with 5 projects marked as using it. Surprisingly, although many projects use JavaScript, it is only tagged 3 times.
+
+Surprisingly, most tags are used on only a single project. For example, of the 35 topic tags, only four occur more than once. If we are planning to use tags to recommend projects to volunteers, we probably want fewer tag categories (or to bucket our tags by broad theme, e.g. food security).
+
+
+## Which projects have which tags
+
+Tags come in three forms: tech, topic, and event.
+Below are the most common tags to occur on projects created in the last year.
+
+
+### Tech tags
+
+Below are all of the recent projects with tech tags.
+
+```{r, fig.width=8, fig.height=6}
+
+plot_tags <- . %>% {
+  ggplot(., aes(tag_title, project_title)) +
+  geom_tile(width = .8, height = .8) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_equal()
+}
+
+project_tags_enriched %>%
+  collect() %>%
+  filter(tag_type == "tech") %>%
+  add_count(project_title, name = "ttl_project") %>%
+  add_count(tag_title, name = "ttl_title") %>%
+  mutate(
+    project_title = fct_reorder(project_title, ttl_project, .desc = TRUE),
+    title_rank = ifelse(ttl_title == 1, ttl_project / max(ttl_project), ttl_title),
+    tag_title = fct_reorder(tag_title, title_rank, .desc = TRUE)) %>%
+  mutate(project_title = fct_rev(project_title)) %>%
+  plot_tags()
+```
+
+A key question here is how would we use this information to make project recommendations to a volunteer? It seems like there are too many one-off tags for us to use them effectively. A good first step might be deciding on (e..g) 3 core skillsets that are most needed across our projects, and try re-tagging them to target these skillsets.
+
+### Topic tags
+
+A similar plot is shown below, but for topics.
+
+```{r, fig.width=8, fig.height=6}
+project_tags_enriched %>%
+  collect() %>%
+  filter(str_starts(tag_handle, "topic\\.")) %>%
+  add_count(project_title, name = "ttl_project") %>%
+  add_count(tag_title, name = "ttl_title") %>%
+  mutate(
+    project_title = fct_reorder(project_title, ttl_project, .desc = TRUE),
+    title_rank = ifelse(ttl_title == 1, ttl_project / max(ttl_project), ttl_title),
+    tag_title = fct_reorder(tag_title, title_rank, .desc = TRUE)) %>%
+  mutate(project_title = fct_rev(project_title)) %>%
+  plot_tags()
+
+```
+
+As with the tech tags, it looks like a couple projects have contributed many of the one-off topic tags.
+
+## Summary
+
+At Code for Philly we have thrown around the idea of making recommendations to volunteers based on their self-identified skills. Currently, our projects have tags to help with this. However, with the exception of a couple clear tags (e.g. Python, or covid-19), many tags will be used on only one recent project.
+
+If we go over (1) the projects that might be recommended to volunteers, and (2) the segments of skillsets we might break projects into, we can create a unified set of tags. This will make it easier for project leads to identify their needs in a way that allows codeforphilly.org to recommend volunteers to them.
+
+(Alternatively, we could bucket tags into broader categories!)
