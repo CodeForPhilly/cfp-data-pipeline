@@ -11,15 +11,17 @@ services:
     airflow:
         build:
             context: ./airflow
+        env_file:
+          - .env
         environment:
                 - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql://${DEFAULT_USER}:${DEFAULT_PASSWORD}@postgres:5432/airflow
                 - AIRFLOW_CONN_POSTGRES_DEFAULT=postgresql://${DEFAULT_USER}:${DEFAULT_PASSWORD}@postgres:5432/datawarehouse
                 - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
                 - AIRFLOW__WEBSERVER__SECRET_KEY=${SECRET_KEY}
-                - DEFAULT_USER=${DEFAULT_USER}
-                - DEFAULT_PASSWORD=${DEFAULT_PASSWORD}
-                - LADDR_DB_USER=${LADDR_DB_USER}
-                - LADDR_DB_PASS=${LADDR_DB_PASS}
+               #- DEFAULT_USER=${DEFAULT_USER}
+               #- DEFAULT_PASSWORD=${DEFAULT_PASSWORD}
+               #- LADDR_DB_USER=${LADDR_DB_USER}
+               #- LADDR_DB_PASS=${LADDR_DB_PASS}
         command: >
             /bin/bash -c "
                 # Wait for PG
