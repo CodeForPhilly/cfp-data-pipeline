@@ -18,3 +18,9 @@ cfp_create_table <- function(tbl, table_name) {
     overwrite = TRUE,
   )
 }
+
+cfp_create_schema <- function(schema_name) {
+  cfp_execute(
+    glue("CREATE SCHEMA IF NOT EXISTS {schema_name} AUTHORIZATION {Sys.getenv('DEFAULT_USER')};")
+  )
+}
