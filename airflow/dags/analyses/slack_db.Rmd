@@ -1,0 +1,277 @@
+---
+author: Michael Chow
+operator: local.RmdOperator
+output:
+  html_document:
+    toc: true
+    toc_float: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(lubridate)
+library(dbplyr)
+library(assertthat)
+
+# use http v1.1, since v2 throws errors in docker
+httr::set_config(httr::config(http_version = 2))
+
+# utility funcs ----
+frame_to_listcol <- function(df_col) {
+  # data.frames can have columns that are data.frames. It's a bad
+  # idea, so we turn them into list columns.
+  split(df_col, seq(nrow(df_col)))  
+}
+
+# make sure we have a token ----
+stopifnot(
+  Sys.getenv("SLACK_BOT_USER_OAUTH_TOKEN") != ""
+  )
+```
+
+## Fix slackr to get more than 1000 users
+
+```{r}
+library(httr)
+#library(slackr)
+
+with_locale <- function() {
+  loc <- Sys.getlocale("LC_CTYPE")
+  Sys.setlocale("LC_CTYPE", "C")
+  Sys.setlocale("LC_CTYPE", loc)
+  
+  do.call("on.exit", list(substitute(Sys.setlocale("LC_CTYPE", loc))), envir = parent.frame())
+}
+
+follow_cursor <- function(crnt_data, response, func, ...) {
+  cursor <- response$response_metadata$next_cursor
+  if (!is.null(cursor) && cursor != "") {
+    next_data <- func(cursor = cursor, ...)
+    bind_rows(crnt_data, next_data)
+  } else {
+    crnt_data
+  }
+}
+
+slackr_fixed_users <- function (bot_user_oauth_token = Sys.getenv("SLACK_BOT_USER_OAUTH_TOKEN"), cursor = "") 
+{
+    with_locale()
+
+    args <- list(token = bot_user_oauth_token)
+    if (cursor != "") args$cursor = cursor
+    
+    tmp <- httr::POST("https://slack.com/api/users.list", body = args)
+    httr::stop_for_status(tmp)
+    json <- jsonlite::fromJSON(httr::content(tmp, as = "text"))
+    members <- json$members
+    cols <- setdiff(colnames(members), c("profile", "real_name"))
+    #cols_prof <- grep("image_.*", names(members$profile), value = TRUE)
+    
+    users <- cbind.data.frame(members[, cols], members$profile, stringsAsFactors = FALSE)
+    
+    follow_cursor(users, json, slackr_fixed_users)    
+}
+
+slackr_channels_fixed <- function (bot_user_oauth_token = Sys.getenv("SLACK_BOT_USER_OAUTH_TOKEN")) 
+{
+  with_locale()
+  # NOTE: simply removed private channels from this URL
+  tmp <- POST("https://slack.com/api/conversations.list?limit=500&types=public_channel", 
+    body = list(token = bot_user_oauth_token))
+  stop_for_status(tmp)
+  jsonlite::fromJSON(content(tmp, as = "text"))$channels
+}
+
+history_slackr <- function(count,
+                           ...,
+                          channel=Sys.getenv("SLACK_CHANNEL"),
+                          api_token=Sys.getenv("SLACK_BOT_USER_OAUTH_TOKEN")) {
+
+  assert_that(is.string(channel))
+  assert_that(is.string(api_token))
+
+
+  with_locale()
+  
+  resp <- httr::POST(url="https://slack.com/api/conversations.history",
+               body=list(token=api_token,
+                         channel=channel,
+                         count=count,
+                         ...))
+  warn_for_status(resp)
+
+  slack_hist <- jsonlite::fromJSON(httr::content(resp, as="text"))$messages
+  
+  return(slack_hist)
+}
+
+slackr_channel_members <- function(
+                           ...,
+                          channel=Sys.getenv("SLACK_CHANNEL"),
+                          api_token=Sys.getenv("SLACK_BOT_USER_OAUTH_TOKEN"),
+                          cursor = "") {
+
+  assert_that(is.string(channel))
+  assert_that(is.string(api_token))
+
+  with_locale()
+  
+  args <- list(token=api_token, channel=channel)
+  
+  if (cursor != "") args$cursor = cursor
+  
+  resp <- httr::POST(url="https://slack.com/api/conversations.members", body=args)
+  warn_for_status(resp)
+  
+  json <- jsonlite::fromJSON(httr::content(resp, as="text"))
+
+  members <- tibble(
+    user = json$members
+  )
+  
+  follow_cursor(members, json, slackr_channel_members, channel = channel, api_token = api_token)
+}
+```
+
+
+## Fetching data
+
+Uses the following slackr functions:
+
+* slackr_users : get a data frame of Slack users
+* slackr_channels : get a data frame of Slack channels
+* slackr_groups : get a data frame of Slack groups
+* slackr_history: Return message history of a Slack channel to a data.frame
+
+```{r fetch_raw, cache = TRUE}
+raw_users <-
+  #slackr_users() %>%
+  slackr_fixed_users() %>%
+  as_tibble()# %>%
+  #select(id, user_name = name)
+
+raw_channels <-
+  slackr_channels_fixed() %>%
+  filter(!is_archived)
+
+fix_empty <- function (df) {
+  if (is_empty(df)) return(tibble())  
+  df
+}
+
+# takes about 2 seconds per channel--so 250 * 2 = 500 seconds.
+raw_messages_nested <-
+  raw_channels %>%
+  select(channel_id = id) %>%
+  mutate(
+    history = map(
+      channel_id,
+      slowly(~ fix_empty(history_slackr(1000, channel = .x)),  rate_delay(1.25))
+    )
+  )
+
+
+# sanity check that dataframe columns are well-structured
+# they should have same # of rows as data
+# this is kind of nuts, but that's what happens when columns are data.frames
+fix_raw <-
+  raw_messages_nested %>%
+  rowwise() %>%
+  do(
+    valid_subdfs = all(
+      map_int(keep(.$history, ~ "data.frame" %in% class(.x)), nrow) == nrow(.$history)
+    ),
+    fixed = mutate_if(.$history, ~ is(., "data.frame"), frame_to_listcol),
+    channel_id = .$channel_id
+  ) %>%
+  mutate(
+    valid_subdfs = as.logical(valid_subdfs),
+    channel_id = unlist(channel_id)
+    )
+  #{stopifnot(all(.$valid_subdfs))}
+  
+  
+raw_messages <-
+  fix_raw %>%
+  unnest(fixed) %>%
+  mutate(ts = as_datetime(as.numeric(ts)))
+
+raw_channel_users <-
+  raw_channels %>%
+  select(channel_id = id) %>%
+  mutate(
+    users = map(
+      channel_id,
+      slowly(~  fix_empty(slackr_channel_members(channel = .x, limit = 500)),  rate_delay(1.25))
+    )
+  ) %>%
+  unnest(users)
+
+```
+
+## Wrangling
+
+Here, I just removed all the columns holding nested data. Would be quick to add useful ones as tables!
+
+```{r wrangle}
+channels <-
+  raw_channels %>%
+  select(
+    -topic, -purpose, -previous_names, -starts_with("is_"),
+    -parent_conversation, -shared_team_ids, -starts_with("pending"),
+    -conversation_host_id, -unlinked, -frozen_reason
+    ) %>%
+  as_tibble()
+
+channel_users <- raw_channel_users
+
+messages <-
+  raw_messages %>%
+  select(
+    channel_id, type, subtype, text, ts, username, bot_id, user, team, client_msg_id,
+    thread_ts, reply_count, reply_users_count, latest_reply, subscribed,
+    last_read, is_starred, item_type, upload_reply_to, topic,
+    purpose, inviter, hidden
+  )
+
+
+users <-
+  raw_users %>%
+  select(
+    id, real_name, display_name, title, team_id,deleted,updated,
+    status_text, is_invited_user, bot_id, team, guest_invited_by
+  )
+
+## example of joining all data
+# channels %>%
+#   left_join(messages, c("name" = "channel_name")) %>%
+#   left_join(users, c("user" = "id"))
+```
+
+## Create DB Tables
+
+```{r}
+cfp_create_schema("slack")
+cfp_create_table(channels, "slack.channels")     # creates slack_channels table
+cfp_create_table(messages, "slack.messages")
+cfp_create_table(users, "slack.users")
+```
+
+
+## Demo of querying DB
+
+```{r}
+# example counting number of archived channels using db
+#tbl(con, "channels") %>% count(is_archived)
+```
+
+```{r}
+#tbl(con, "messages") %>% group_by(channel_name)
+```
+
+
+
