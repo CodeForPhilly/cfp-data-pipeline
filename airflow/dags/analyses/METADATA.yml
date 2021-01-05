@@ -1,10 +1,10 @@
 description: "Code for Philly analyses demo"
 schedule_interval: "0 0 * * *"
 default_args:
-    owner: John Templeton
+    owner: Michael Chow
     depends_on_past: False
     start_date: !days_ago 1
-    email: john@gusty.com
+    email: mchow@codeforphilly.org
     email_on_failure: False
     email_on_retry: False
     retries: 1
