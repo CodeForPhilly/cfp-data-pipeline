@@ -18,4 +18,4 @@ dag_directories = [os.path.join(dag_parent_dir, name) for name in os.listdir(dag
 
 for dag_directory in dag_directories:
     dag_id = os.path.basename(dag_directory)
-    globals()[dag_id] = create_dag(dag_directory)
+    globals()[dag_id] = create_dag(dag_directory, ignore_subfolders=True)
