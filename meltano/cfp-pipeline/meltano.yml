@@ -15,7 +15,25 @@ plugins:
     config:
       access_token: ''
       repository: ''
+  - name: tap-slack
+    namespace: tap_slack
+    variant: singer-io
+    pip_url: tap-slack
+    executable: tap-slack
+    capabilities:
+    - catalog
+    - discover
+    - state
+    config:
+      token: token_here
+      start_date: 2021-01-08 00:00:00
+      private_channels: false
+      join_public_channels: true
+      exclude_archived: true
   loaders:
   - name: target-csv
     variant: singer-io
     pip_url: target-csv
+  - name: target-postgres
+    variant: datamill-co
+    pip_url: singer-target-postgres
