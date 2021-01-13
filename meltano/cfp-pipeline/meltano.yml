@@ -1,0 +1,21 @@
+version: 1
+send_anonymous_usage_stats: true
+project_id: 45da6c57-af78-4ac6-8e0c-d26e914bb9e5
+plugins:
+  extractors:
+  - name: tap-github
+    namespace: tap_github
+    variant: singer-io
+    pip_url: tap-github
+    executable: tap-github
+    capabilities:
+    - catalog
+    - discover
+    - state
+    config:
+      access_token: ''
+      repository: ''
+  loaders:
+  - name: target-csv
+    variant: singer-io
+    pip_url: target-csv
