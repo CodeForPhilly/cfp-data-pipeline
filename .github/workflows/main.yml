@@ -7,6 +7,16 @@ jobs:
     name: Deploy airflow
     runs-on: ubuntu-18.04
     steps:
+      - name: Create SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$PROD_SSHKEY" > ~/.ssh/private.key
+          sudo chmod 600 ~/.ssh/private.key
+          echo "$PROD_SSHKNOWNHOSTS" > ~/.ssh/known_hosts
+        shell: bash
+        env:
+          PROD_SSHKEY: ${{secrets.PROD_SSHKEY}}
+          PROD_SSHKNOWNHOSTS: ${{secrets.SSHKNOWNHOSTS}}
       - name: Make .env
         uses: SpicyPizza/create-envfile@v1
         with:
@@ -18,19 +28,15 @@ jobs:
           envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
           envkey_SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
           file_name: .env
-      - uses: appleboy/scp-action@v0.1.1
-        with:
-          HOST: ${{ secrets.PROD_HOST }}
-          USERNAME: ${{ secrets.PROD_USERNAME }}
-          KEY : ${{ secrets.PROD_SSHKEY }}
-          source: ".env"
-      - uses: appleboy/ssh-action@v0.1.4
-        with:
-          HOST: ${{ secrets.PROD_HOST }}
-          USERNAME: ${{ secrets.PROD_USERNAME }}
-          KEY : ${{ secrets.PROD_SSHKEY }}
-          script: |
+      - name: Copy .env to server
+        run: |
+          scp -i ~/.ssh/private.key .env "$PROD_USERNAME"@"$PROD_HOST":.env
+          ssh -i ~/.ssh/private.key "$PROD_USERNAME"@"$PROD_HOST" "
             docker-compose down
             rm -rf cfp-data-pipeline
             git clone https://github.com/CodeForPhilly/cfp-data-pipeline.git
             cd cfp-data-pipeline && docker-compose up -d
+          "
+        env:
+          PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
+          PROD_HOST: ${{ secrets.PROD_HOST }}
