@@ -33,10 +33,10 @@ jobs:
           # Should definitely re-enable strict host key checking
           scp -i ~/.ssh/private.key -o StrictHostKeyChecking=no .env "$PROD_USERNAME"@"$PROD_HOST":.env
           ssh -i ~/.ssh/private.key -o StrictHostKeyChecking=no "$PROD_USERNAME"@"$PROD_HOST" "
-            docker-compose down
             rm -rf cfp-data-pipeline
             git clone https://github.com/CodeForPhilly/cfp-data-pipeline.git
-            cd cfp-data-pipeline && docker-compose up -d
+            mv .env cfp-data-pipeline
+            cd cfp-data-pipeline && docker-compose down && docker-compose up -d
           "
         env:
           PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
