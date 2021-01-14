@@ -30,8 +30,9 @@ jobs:
           file_name: .env
       - name: Copy .env to server
         run: |
-          scp -i ~/.ssh/private.key .env "$PROD_USERNAME"@"$PROD_HOST":.env
-          ssh -i ~/.ssh/private.key "$PROD_USERNAME"@"$PROD_HOST" "
+          # Should definitely re-enable strict host key checking
+          scp -i ~/.ssh/private.key -o StrictHostKeyChecking=no .env "$PROD_USERNAME"@"$PROD_HOST":.env
+          ssh -i ~/.ssh/private.key -o StrictHostKeyChecking=no "$PROD_USERNAME"@"$PROD_HOST" "
             docker-compose down
             rm -rf cfp-data-pipeline
             git clone https://github.com/CodeForPhilly/cfp-data-pipeline.git
