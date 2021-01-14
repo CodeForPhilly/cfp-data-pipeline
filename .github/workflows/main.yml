@@ -1,0 +1,36 @@
+name: main
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy airflow
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Make .env
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_DEFAULT_USER: ${{ secrets.DEFAULT_USER }}
+          envkey_DEFAULT_PASSWORD: ${{ secrets.DEFAULT_PASSWORD }}
+          envkey_LADDR_DB_USER: ${{ secrets.LADDR_DB_USER }}
+          envkey_LADDR_DB_PASS: ${{ secrets.LADDR_DB_PASS }}
+          envkey_FERNET_KEY: ${{ secrets.FERNET_KEY }}
+          envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          envkey_SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
+          file_name: .env
+      - uses: appleboy/scp-action
+        env:
+          HOST: ${{ secrets.PROD_HOST }}
+          USERNAME: ${{ secrets.PROD_USERNAME }}
+          KEY : ${{ secrets.PROD_SSHKEY }}
+          source: ".env"
+      - uses: appleboy/ssh-action
+        env:
+          HOST: ${{ secrets.PROD_HOST }}
+          USERNAME: ${{ secrets.PROD_USERNAME }}
+          KEY : ${{ secrets.PROD_SSHKEY }}
+        script: |
+          docker-compose down
+          rm -rf cfp-data-pipeline
+          git clone https://github.com/CodeForPhilly/cfp-data-pipeline.git
+          cd cfp-data-pipeline && docker-compose up -d
