@@ -9,12 +9,12 @@ plugins:
     pip_url: tap-github
     executable: tap-github
     capabilities:
-    - catalog
+    - properties
     - discover
     - state
     config:
-      access_token: ''
-      repository: ''
+      access_token: $TAP_GITHUB_ACCESS_TOKEN
+      repository: CodeForPhilly/cfp-data-pipeline
   - name: tap-slack
     namespace: tap_slack
     variant: singer-io
@@ -25,8 +25,8 @@ plugins:
     - discover
     - state
     config:
-      token: token_here
-      start_date: 2021-01-08 00:00:00
+      token: $TAP_SLACK_TOKEN
+      start_date: '2021-01-08T00:00:00'
       private_channels: false
       join_public_channels: true
       exclude_archived: true
@@ -37,3 +37,23 @@ plugins:
   - name: target-postgres
     variant: datamill-co
     pip_url: singer-target-postgres
+    config:
+      postgres_host: postgres
+      postgres_port: 5432
+      postgres_database: meltano
+      postgres_username: $TARGET_POSTGRES_POSTGRES_USERNAME
+      postgres_password: $TARGET_POSTGRES_POSTGRES_PASSWORD
+      postgres_schema: public
+schedules:
+- name: slack-to-postgres
+  extractor: tap-slack
+  loader: target-postgres
+  transform: skip
+  interval: '@once'
+  start_date: 2021-01-08 00:00:00
+- name: github-to-postgres
+  extractor: tap-github
+  loader: target-postgres
+  transform: skip
+  interval: '@once'
+  start_date: 2021-01-15 18:41:47.984720
