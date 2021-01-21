@@ -1,6 +1,8 @@
 name: main
 on:
   workflow_dispatch:
+  push:
+    branches: ["master", "staging"]
 
 jobs:
   deploy:
@@ -28,16 +30,26 @@ jobs:
           envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
           envkey_SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
           file_name: .env
+      - name: Set host depending on github branch
+        run: |
+          if [ "$GITHUB_HEAD_REF" = "master" ]; then
+            echo "SSH_HOST=$PROD_HOST" >> $GITHUB_ENV
+          else
+            echo "SSH_HOST=$STAGING_HOST" >> $GITHUB_ENV
+          fi
+        env:
+          PROD_HOST: ${{ secrets.PROD_HOST }}
+          STAGING_HOST: ${{ secrets.STAGING_HOST }}
       - name: Copy .env to server
         run: |
           # Should definitely re-enable strict host key checking
-          scp -i ~/.ssh/private.key -o StrictHostKeyChecking=no .env "$PROD_USERNAME"@"$PROD_HOST":.env
-          ssh -i ~/.ssh/private.key -o StrictHostKeyChecking=no "$PROD_USERNAME"@"$PROD_HOST" "
+          scp -i ~/.ssh/private.key -o StrictHostKeyChecking=no .env "$PROD_USERNAME"@"$SSH_HOST":.env
+          # TODO: currently branch is cloned, but ideally should checkout out the specific commit
+          ssh -i ~/.ssh/private.key -o StrictHostKeyChecking=no "$PROD_USERNAME"@"$SSH_HOST" "
             rm -rf cfp-data-pipeline
-            git clone https://github.com/CodeForPhilly/cfp-data-pipeline.git
+            git clone --single-branch --branch ${GITHUB_REF#refs/heads/} https://github.com/CodeForPhilly/cfp-data-pipeline.git
             mv .env cfp-data-pipeline
             cd cfp-data-pipeline && docker-compose down && docker-compose up -d
           "
         env:
           PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
-          PROD_HOST: ${{ secrets.PROD_HOST }}
