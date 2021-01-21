@@ -65,3 +65,12 @@ services:
                 # - ./meltano/cfp-pipeline:/usr/local/airflow/dags/meltano
         ports:
             - "8080:8080"
+    meltano:
+        image: meltano/meltano:latest-python3.8
+        depends_on:
+          - postgres
+        volumes:
+          - .:/usr/local/share/cfp
+        ports:
+          - "5000:5000"
+        working_dir: /usr/local/share/cfp/meltano/cfp-pipeline
