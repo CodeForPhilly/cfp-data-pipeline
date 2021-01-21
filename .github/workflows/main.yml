@@ -45,9 +45,9 @@ jobs:
         run: |
           echo $TESTVAR
           # Should definitely re-enable strict host key checking
-          scp -i ~/.ssh/private.key -o StrictHostKeyChecking=no .env "$PROD_USERNAME"@"$SSH_HOST":.env
+          scp -i ~/.ssh/private.key -o StrictHostKeyChecking=no .env "$PROD_USERNAME"@"$STAGING_HOST":.env
           # TODO: currently branch is cloned, but ideally should checkout out the specific commit
-          ssh -i ~/.ssh/private.key -o StrictHostKeyChecking=no "$PROD_USERNAME"@"$SSH_HOST" "
+          ssh -i ~/.ssh/private.key -o StrictHostKeyChecking=no "$PROD_USERNAME"@"$STAGING_HOST" "
             rm -rf cfp-data-pipeline
             git clone --single-branch --branch $GITHUB_HEAD_REF https://github.com/CodeForPhilly/cfp-data-pipeline.git
             mv .env cfp-data-pipeline
@@ -55,3 +55,4 @@ jobs:
           "
         env:
           PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
+          STAGING_HOST: ${{ secrets.STAGING_HOST }}
