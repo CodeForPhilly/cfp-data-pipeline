@@ -35,7 +35,7 @@ jobs:
           if [ "$GITHUB_HEAD_REF" = "master" ]; then
             echo "SSH_HOST=$PROD_HOST" >> $GITHUB_ENV
           else
-            echo "SSH_HOST=$STAGING_HOST" >> $GITHUB_ENV
+            echo "SSH_HOST=$PROD_HOST" >> $GITHUB_ENV
           fi
         env:
           PROD_HOST: ${{ secrets.PROD_HOST }}
