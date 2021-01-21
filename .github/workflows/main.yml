@@ -39,7 +39,7 @@ jobs:
           fi
         env:
           PROD_HOST: ${{ secrets.PROD_HOST }}
-          STAGING_HOST: ${{ secrets.PROD_HOST }}
+          STAGING_HOST: ${{ secrets.STAGING_HOST }}
       - name: Copy .env to server
         run: |
           # Should definitely re-enable strict host key checking
