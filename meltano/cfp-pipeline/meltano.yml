@@ -44,22 +44,16 @@ plugins:
       postgres_username: $TARGET_POSTGRES_POSTGRES_USERNAME
       postgres_password: $TARGET_POSTGRES_POSTGRES_PASSWORD
       postgres_schema: public
-  orchestrators:
-  - name: airflow
-    pip_url: apache-airflow==1.10.12 --constraint https://raw.githubusercontent.com/apache/airflow/constraints-1.10.12/constraints-3.6.txt
-  files:
-  - name: airflow
-    pip_url: git+https://gitlab.com/meltano/files-airflow.git
 schedules:
 - name: slack-to-postgres
   extractor: tap-slack
   loader: target-postgres
   transform: skip
-  interval: '@once'
+  interval: '@daily'
   start_date: 2021-01-08 00:00:00
 - name: github-to-postgres
   extractor: tap-github
   loader: target-postgres
   transform: skip
-  interval: '@once'
+  interval: '@daily'
   start_date: 2021-01-15 18:41:47.984720

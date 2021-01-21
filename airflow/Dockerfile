@@ -12,6 +12,10 @@ RUN Rscript -e 'install.packages("snakecase")'
 ADD requirements.txt .
 RUN pip3 install -r requirements.txt
 
+# Create venv for meltano
+RUN virtualenv -p python3 /usr/local/venv/meltano
+RUN . /usr/local/venv/meltano/bin/activate && pip3 install meltano
+
 # Airflow Env Vars
 ENV AIRFLOW_HOME='/usr/local/airflow'
 

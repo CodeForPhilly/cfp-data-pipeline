@@ -18,6 +18,7 @@ services:
                 - AIRFLOW_CONN_POSTGRES_DEFAULT=postgresql://${DEFAULT_USER}:${DEFAULT_PASSWORD}@postgres:5432/datawarehouse
                 - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
                 - AIRFLOW__WEBSERVER__SECRET_KEY=${SECRET_KEY}
+                - MELTANO_PROJECT_ROOT=/usr/local/meltano/cfp-pipeline
                #- DEFAULT_USER=${DEFAULT_USER}
                #- DEFAULT_PASSWORD=${DEFAULT_PASSWORD}
                #- LADDR_DB_USER=${LADDR_DB_USER}
@@ -60,5 +61,7 @@ services:
             - postgres
         volumes:
                 - ./airflow:/usr/local/airflow
+                - ./meltano:/usr/local/meltano
+                # - ./meltano/cfp-pipeline:/usr/local/airflow/dags/meltano
         ports:
             - "8080:8080"
