@@ -32,16 +32,18 @@ jobs:
           file_name: .env
       - name: Set host depending on github branch
         run: |
-          if [ "$GITHUB_HEAD_REF" = "master" ]; then
-            echo "SSH_HOST=$PROD_HOST" >> $GITHUB_ENV
-          else
-            echo "SSH_HOST=$STAGING_HOST" >> $GITHUB_ENV
-          fi
+          #if [ "$GITHUB_HEAD_REF" = "master" ]; then
+          #  echo "SSH_HOST=$PROD_HOST" >> $GITHUB_ENV
+          #else
+          echo "SSH_HOST=$STAGING_HOST" >> $GITHUB_ENV
+          echo "TESTVAR=123" >> $GITHUB_ENV
+          #fi
         env:
           PROD_HOST: ${{ secrets.PROD_HOST }}
           STAGING_HOST: ${{ secrets.STAGING_HOST }}
       - name: Copy .env to server
         run: |
+          echo $TESTVAR
           # Should definitely re-enable strict host key checking
           scp -i ~/.ssh/private.key -o StrictHostKeyChecking=no .env "$PROD_USERNAME"@"$SSH_HOST":.env
           # TODO: currently branch is cloned, but ideally should checkout out the specific commit
