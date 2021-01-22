@@ -40,7 +40,7 @@ plugins:
     config:
       postgres_host: postgres
       postgres_port: 5432
-      postgres_database: meltano
+      postgres_database: airflow
       postgres_username: $TARGET_POSTGRES_POSTGRES_USERNAME
       postgres_password: $TARGET_POSTGRES_POSTGRES_PASSWORD
       postgres_schema: public
