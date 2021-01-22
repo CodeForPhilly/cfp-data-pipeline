@@ -40,10 +40,10 @@ plugins:
     config:
       postgres_host: postgres
       postgres_port: 5432
-      postgres_database: airflow
+      postgres_database: datawarehouse
       postgres_username: $TARGET_POSTGRES_POSTGRES_USERNAME
       postgres_password: $TARGET_POSTGRES_POSTGRES_PASSWORD
-      postgres_schema: public
+      postgres_schema: views
 schedules:
 - name: slack-to-postgres
   extractor: tap-slack

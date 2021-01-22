@@ -47,7 +47,10 @@ services:
                   --role Admin
 
                 # Set up datalake db & views schema
-            	  python3 demo-setup/datawarehouse_setup.py
+                python3 demo-setup/datawarehouse_setup.py
+
+                # have meltano install dependencies in the virtualenv
+                cd ${MELTANO_PROJECT_ROOT} && /usr/local/venv/meltano install
 
                 # Start airflow
                 airflow scheduler &
