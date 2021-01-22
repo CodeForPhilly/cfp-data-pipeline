@@ -29,6 +29,7 @@ jobs:
           envkey_FERNET_KEY: ${{ secrets.FERNET_KEY }}
           envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
           envkey_SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
+          envkey_MELTANO_PROJECT_ROOT: /usr/local/meltano/cfp-pipeline
           file_name: .env
       - name: Set host depending on github branch
         run: |
