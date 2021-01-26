@@ -1,4 +1,5 @@
 ---
+title: what
 operator: local.RmdOperator
 ---
 
@@ -35,8 +36,16 @@ tbl_projects <- tbl(src_con, "projects")
 tbl_project_updates <- tbl(src_con, "project_updates")
 tbl_tags <- tbl(src_con, "tags")
 tbl_tag_items <- tbl(src_con, "tag_items")
-tbl_people <- tbl(src_con, "people") %>%
-  select(ID, CreatorID, Created, Modified, ModifierID, Username)
+#tbl_people <- tblsrc_con, "people") %>%
+#  select(ID, CreatorID, Created, Modified, ModifierID, Username)
+
+# We have restricted access to this table, which dbplyr complains about
+tbl_people <- 
+  DBI::dbGetQuery(
+    src_con,
+    "SELECT ID, CreatorID, Created, Modified, ModifierID, Username from people"
+  ) %>%
+  as_tibble()
 ```
 
 
