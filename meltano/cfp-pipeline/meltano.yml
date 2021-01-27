@@ -6,10 +6,10 @@ plugins:
   - name: tap-github
     namespace: tap_github
     variant: singer-io
-    pip_url: tap-github
+    pip_url: git+https://github.com/dherbst/tap-github.git@cfp-main
     executable: tap-github
     capabilities:
-    - properties
+    - catalog
     - discover
     - state
     config:
