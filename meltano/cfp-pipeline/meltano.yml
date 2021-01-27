@@ -44,6 +44,17 @@ plugins:
       postgres_username: $DEFAULT_USER
       postgres_password: $DEFAULT_PASSWORD
       postgres_schema: views
+  - name: target-snowflake
+    variant: meltano
+    pip_url: git+https://gitlab.com/meltano/target-snowflake.git
+    config:
+      account: $TARGET_SNOWFLAKE_ACCOUNT
+      username: $TARGET_SNOWFLAKE_USERNAME
+      password: $TARGET_SNOWFLAKE_PASSWORD
+      role: $TARGET_SNOWFLAKE_ROLE
+      database: $TARGET_SNOWFLAKE_DATABASE
+      warehouse: $TARGET_SNOWFLAKE_WAREHOUSE
+      schema: $TARGET_SNOWFLAKE_SCHEMA
 schedules:
 - name: slack-to-postgres
   extractor: tap-slack
