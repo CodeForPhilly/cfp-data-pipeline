@@ -6,10 +6,10 @@ plugins:
   - name: tap-github
     namespace: tap_github
     variant: singer-io
-    pip_url: tap-github
+    pip_url: git+https://github.com/dherbst/tap-github.git@cfp-main
     executable: tap-github
     capabilities:
-    - properties
+    - catalog
     - discover
     - state
     config:
@@ -41,8 +41,8 @@ plugins:
       postgres_host: postgres
       postgres_port: 5432
       postgres_database: datawarehouse
-      postgres_username: $TARGET_POSTGRES_POSTGRES_USERNAME
-      postgres_password: $TARGET_POSTGRES_POSTGRES_PASSWORD
+      postgres_username: $DEFAULT_USER
+      postgres_password: $DEFAULT_PASSWORD
       postgres_schema: views
 schedules:
 - name: slack-to-postgres
