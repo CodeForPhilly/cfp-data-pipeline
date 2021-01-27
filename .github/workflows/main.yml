@@ -53,7 +53,7 @@ jobs:
             rm -rf cfp-data-pipeline
             git clone --single-branch --branch ${GITHUB_REF#refs/heads/} https://github.com/CodeForPhilly/cfp-data-pipeline.git
             mv .env cfp-data-pipeline
-            cd cfp-data-pipeline && docker-compose down && docker-compose up -d
+            cd cfp-data-pipeline && docker-compose down && docker-compose up --build -d
           "
         env:
           PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
