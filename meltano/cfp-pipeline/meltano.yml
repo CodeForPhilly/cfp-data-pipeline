@@ -41,8 +41,8 @@ plugins:
       postgres_host: postgres
       postgres_port: 5432
       postgres_database: datawarehouse
-      postgres_username: $TARGET_POSTGRES_POSTGRES_USERNAME
-      postgres_password: $TARGET_POSTGRES_POSTGRES_PASSWORD
+      postgres_username: $DEFAULT_USER
+      postgres_password: $DEFAULT_PASSWORD
       postgres_schema: views
 schedules:
 - name: slack-to-postgres
