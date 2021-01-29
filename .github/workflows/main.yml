@@ -36,9 +36,11 @@ jobs:
           file_name: .env
       - name: Set host depending on github branch
         run: |
-          if [ "$GITHUB_HEAD_REF" = "master" ]; then
+          if [ ${GITHUB_REF#refs/heads/} = "master" ]; then
+            echo "Will deploy to production"
             echo "SSH_HOST=$PROD_HOST" >> $GITHUB_ENV
           else
+            echo "Will deploy to staging"
             echo "SSH_HOST=$STAGING_HOST" >> $GITHUB_ENV
           fi
         env:
