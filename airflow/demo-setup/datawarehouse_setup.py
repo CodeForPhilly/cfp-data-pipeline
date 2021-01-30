@@ -16,3 +16,17 @@ if not engine.dialect.has_schema(engine, 'views'):
     engine.execute("GRANT ALL PRIVILEGES ON SCHEMA views TO {user};".format(user = engine.url.username))
     engine.execute("GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA views TO {user};".format(user = engine.url.username))
     engine.execute("ALTER DEFAULT PRIVILEGES IN SCHEMA views GRANT ALL PRIVILEGES ON TABLES TO {user};".format(user = engine.url.username))
+
+# separate schema for github
+if not engine.dialect.has_schema(engine, 'views_github'):
+    engine.execute(sqlalchemy.schema.CreateSchema('views_github'))
+    engine.execute("GRANT ALL PRIVILEGES ON SCHEMA views_github TO {user};".format(user = engine.url.username))
+    engine.execute("GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA views_github TO {user};".format(user = engine.url.username))
+    engine.execute("ALTER DEFAULT PRIVILEGES IN SCHEMA views_github GRANT ALL PRIVILEGES ON TABLES TO {user};".format(user = engine.url.username))
+
+# separate schema for slack
+if not engine.dialect.has_schema(engine, 'views_slack'):
+    engine.execute(sqlalchemy.schema.CreateSchema('views_slack'))
+    engine.execute("GRANT ALL PRIVILEGES ON SCHEMA views_slack TO {user};".format(user = engine.url.username))
+    engine.execute("GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA views_slack TO {user};".format(user = engine.url.username))
+    engine.execute("ALTER DEFAULT PRIVILEGES IN SCHEMA views_slack GRANT ALL PRIVILEGES ON TABLES TO {user};".format(user = engine.url.username))
