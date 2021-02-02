@@ -47,11 +47,11 @@ plugins:
   - name: target-postgres-github
     inherit_from: target-postgres
     config:
-      postgres_schema: views_github
+      postgres_schema: tap_github
   - name: target-postgres-slack
     inherit_from: target-postgres
     config:
-      postgres_schema: views_slack
+      postgres_schema: tap_slack
 schedules:
 - name: slack-to-postgres
   extractor: tap-slack
