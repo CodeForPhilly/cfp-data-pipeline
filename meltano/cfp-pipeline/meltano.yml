@@ -44,6 +44,14 @@ plugins:
       postgres_username: $DEFAULT_USER
       postgres_password: $DEFAULT_PASSWORD
       postgres_schema: views
+  - name: target-postgres-github
+    inherit_from: target-postgres
+    config:
+      postgres_schema: tap_github
+  - name: target-postgres-slack
+    inherit_from: target-postgres
+    config:
+      postgres_schema: tap_slack
   - name: target-snowflake
     variant: meltano
     pip_url: git+https://gitlab.com/meltano/target-snowflake.git
@@ -66,13 +74,13 @@ plugins:
 schedules:
 - name: slack-to-postgres
   extractor: tap-slack
-  loader: target-postgres
+  loader: target-postgres-slack
   transform: skip
   interval: '@daily'
   start_date: 2021-01-08 00:00:00
 - name: github-to-postgres
   extractor: tap-github
-  loader: target-postgres
+  loader: target-postgres-github
   transform: skip
   interval: '@daily'
   start_date: 2021-01-15 18:41:47.984720
