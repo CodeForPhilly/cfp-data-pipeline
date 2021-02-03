@@ -10,18 +10,20 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: Create SSH key
-        if: ${{ github.repository_owner == 'CodeForPhilly' }}
         run: |
-          mkdir -p ~/.ssh/
-          echo "$PROD_SSHKEY" > ~/.ssh/private.key
-          sudo chmod 600 ~/.ssh/private.key
-          echo "$PROD_SSHKNOWNHOSTS" > ~/.ssh/known_hosts
+          if [ -n "${PROD_SSHKEY}" ]; then
+            mkdir -p ~/.ssh/
+            echo "$PROD_SSHKEY" > ~/.ssh/private.key
+            sudo chmod 600 ~/.ssh/private.key
+            echo "$PROD_SSHKNOWNHOSTS" > ~/.ssh/known_hosts
+          else
+            echo No PROD_SSHKEY set, skipping this step.
+          fi
         shell: bash
         env:
           PROD_SSHKEY: ${{secrets.PROD_SSHKEY}}
           PROD_SSHKNOWNHOSTS: ${{secrets.SSHKNOWNHOSTS}}
       - name: Make .env
-        if: ${{ github.repository_owner == 'CodeForPhilly' }}
         uses: SpicyPizza/create-envfile@v1
         with:
           envkey_DEFAULT_USER: ${{ secrets.DEFAULT_USER }}
@@ -44,7 +46,6 @@ jobs:
           envkey_TARGET_SNOWFLAKE_WAREHOUSE: ${{ secrets.TARGET_SNOWFLAKE_WAREHOUSE }}
           file_name: .env
       - name: Set host depending on github branch
-        if: ${{ github.repository_owner == 'CodeForPhilly' }}
         run: |
           if [ ${GITHUB_REF#refs/heads/} = "master" ]; then
             echo "Will deploy to production"
@@ -57,16 +58,19 @@ jobs:
           PROD_HOST: ${{ secrets.PROD_HOST }}
           STAGING_HOST: ${{ secrets.STAGING_HOST }}
       - name: Copy .env to server
-        if: ${{ github.repository_owner == 'CodeForPhilly' }}
         run: |
-          # Should definitely re-enable strict host key checking
-          scp -i ~/.ssh/private.key -o StrictHostKeyChecking=no .env "$PROD_USERNAME"@"$SSH_HOST":.env
-          # TODO: currently branch is cloned, but ideally should checkout out the specific commit
-          ssh -i ~/.ssh/private.key -o StrictHostKeyChecking=no "$PROD_USERNAME"@"$SSH_HOST" "
-            rm -rf cfp-data-pipeline
-            git clone --single-branch --branch ${GITHUB_REF#refs/heads/} https://github.com/CodeForPhilly/cfp-data-pipeline.git
-            mv .env cfp-data-pipeline
-            cd cfp-data-pipeline && docker-compose down && docker-compose up --build -d
-          "
+          if [ -n "${PROD_USERNAME}" ]; then
+            # Should definitely re-enable strict host key checking
+            scp -i ~/.ssh/private.key -o StrictHostKeyChecking=no .env "$PROD_USERNAME"@"$SSH_HOST":.env
+            # TODO: currently branch is cloned, but ideally should checkout out the specific commit
+            ssh -i ~/.ssh/private.key -o StrictHostKeyChecking=no "$PROD_USERNAME"@"$SSH_HOST" "
+              rm -rf cfp-data-pipeline
+              git clone --single-branch --branch ${GITHUB_REF#refs/heads/} https://github.com/CodeForPhilly/cfp-data-pipeline.git
+              mv .env cfp-data-pipeline
+              cd cfp-data-pipeline && docker-compose down && docker-compose up --build -d
+            "
+          else
+            echo No PROD_USERNAME set, skipping Copy to .env server step.
+          fi
         env:
           PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
