@@ -5,8 +5,16 @@ require("dbcooper")
 require("dbpath")
 
 # setup dbs...
+DB_URL <- Sys.getenv("AIRFLOW_CONN_POSTGRES_DEFAULT")
+if (DB_URL == "") {
+  DB_URL <- glue(
+      "postgresql://{DEFAULT_USER}:{DEFAULT_PASSWORD}@{DEFAULT_HOST}:{DEFAULT_PORT}/datawarehouse",
+      .envir = as.list(Sys.getenv())
+  )
+}
+
 cfp_tbl <- dbcooper::dbc_init(
-    DBI::dbConnect(dbpath::dbpath(Sys.getenv("AIRFLOW_CONN_POSTGRES_DEFAULT"))),
+    DBI::dbConnect(dbpath::dbpath(DB_URL)),
     "cfp"
 )
 
