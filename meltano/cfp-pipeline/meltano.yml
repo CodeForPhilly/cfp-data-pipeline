@@ -6,7 +6,7 @@ plugins:
   - name: tap-github
     namespace: tap_github
     variant: singer-io
-    pip_url: git+https://github.com/dherbst/tap-github.git@cfp-main
+    pip_url: git+https://github.com/CodeForPhilly/tap-github.git@cfp-main
     executable: tap-github
     capabilities:
     - catalog
@@ -18,7 +18,7 @@ plugins:
   - name: tap-slack
     namespace: tap_slack
     variant: singer-io
-    pip_url: tap-slack
+    pip_url: git+https://github.com/CodeForPhilly/tap-slack.git@cfp-main
     executable: tap-slack
     capabilities:
     - catalog
@@ -26,7 +26,7 @@ plugins:
     - state
     config:
       token: $TAP_SLACK_TOKEN
-      start_date: '2021-01-08T00:00:00'
+      start_date: '2021-01-08T00:00:00Z'
       private_channels: false
       join_public_channels: true
       exclude_archived: true
