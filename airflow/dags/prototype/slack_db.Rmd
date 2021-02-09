@@ -49,8 +49,12 @@ with_locale <- function() {
 
 follow_cursor <- function(crnt_data, response, func, ...) {
   cursor <- response$response_metadata$next_cursor
+  
   if (!is.null(cursor) && cursor != "") {
-    next_data <- func(cursor = cursor, ...)
+    args = list(...)
+    args$cursor = cursor
+    
+    next_data <- do.call(func, args)
     bind_rows(crnt_data, next_data)
   } else {
     crnt_data
@@ -104,9 +108,10 @@ history_slackr <- function(count,
                          ...))
   warn_for_status(resp)
 
-  slack_hist <- jsonlite::fromJSON(httr::content(resp, as="text"))$messages
+  json <- jsonlite::fromJSON(httr::content(resp, as = "text"))
+  slack_hist <- json$messages
   
-  return(slack_hist)
+  follow_cursor(slack_hist, json, history_slackr, count = count, channel = channel, ...)
 }
 
 slackr_channel_members <- function(
