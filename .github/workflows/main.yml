@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: Create SSH key
+        if: ${{ github.repository_owner == 'CodeForPhilly' }}
         run: |
           mkdir -p ~/.ssh/
           echo "$PROD_SSHKEY" > ~/.ssh/private.key
@@ -20,6 +21,7 @@ jobs:
           PROD_SSHKEY: ${{secrets.PROD_SSHKEY}}
           PROD_SSHKNOWNHOSTS: ${{secrets.SSHKNOWNHOSTS}}
       - name: Make .env
+        if: ${{ github.repository_owner == 'CodeForPhilly' }}
         uses: SpicyPizza/create-envfile@v1
         with:
           envkey_DEFAULT_USER: ${{ secrets.DEFAULT_USER }}
@@ -29,12 +31,20 @@ jobs:
           envkey_FERNET_KEY: ${{ secrets.FERNET_KEY }}
           envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
           envkey_SLACK_BOT_USER_OAUTH_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
+          envkey_TAP_SLACK_TOKEN: ${{ secrets.SLACK_BOT_USER_OAUTH_TOKEN }}
           envkey_MELTANO_PROJECT_ROOT: /usr/local/meltano/cfp-pipeline
           envkey_TAP_GITHUB_ACCESS_TOKEN: ${{ secrets.TAP_GITHUB_ACCESS_TOKEN }}
           envkey_TARGET_POSTGRES_POSTGRES_USERNAME: ${{ secrets.TARGET_POSTGRES_POSTGRES_USERNAME }}
           envkey_TARGET_POSTGRES_POSTGRES_PASSWORD: ${{ secrets.TARGET_POSTGRES_POSTGRES_PASSWORD }}
+          envkey_TARGET_SNOWFLAKE_ACCOUNT: ${{ secrets.TARGET_SNOWFLAKE_ACCOUNT }}
+          envkey_TARGET_SNOWFLAKE_DATABASE: ${{ secrets.TARGET_SNOWFLAKE_DATABASE }}
+          envkey_TARGET_SNOWFLAKE_PASSWORD: ${{ secrets.TARGET_SNOWFLAKE_PASSWORD }}
+          envkey_TARGET_SNOWFLAKE_ROLE: ${{ secrets.TARGET_SNOWFLAKE_ROLE }}
+          envkey_TARGET_SNOWFLAKE_USERNAME: ${{ secrets.TARGET_SNOWFLAKE_USERNAME }}
+          envkey_TARGET_SNOWFLAKE_WAREHOUSE: ${{ secrets.TARGET_SNOWFLAKE_WAREHOUSE }}
           file_name: .env
       - name: Set host depending on github branch
+        if: ${{ github.repository_owner == 'CodeForPhilly' }}
         run: |
           if [ ${GITHUB_REF#refs/heads/} = "master" ]; then
             echo "Will deploy to production"
@@ -47,6 +57,7 @@ jobs:
           PROD_HOST: ${{ secrets.PROD_HOST }}
           STAGING_HOST: ${{ secrets.STAGING_HOST }}
       - name: Copy .env to server
+        if: ${{ github.repository_owner == 'CodeForPhilly' }}
         run: |
           # Should definitely re-enable strict host key checking
           scp -i ~/.ssh/private.key -o StrictHostKeyChecking=no .env "$PROD_USERNAME"@"$SSH_HOST":.env
