@@ -38,7 +38,6 @@ jobs:
           commit-msg: "Auto Commit" # optional
           # Path to file(s) or glob pattern
           file-path: meltano/cfp-pipeline/meltano.yml # optional
-
           github-token:  ${{ secrets.GITHUB_TOKEN }} # optional
-
           allow-removing: false # optional
+          branch: staging
