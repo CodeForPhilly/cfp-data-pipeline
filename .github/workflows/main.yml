@@ -28,6 +28,7 @@ jobs:
         with:
           envkey_DEFAULT_USER: ${{ secrets.DEFAULT_USER }}
           envkey_DEFAULT_PASSWORD: ${{ secrets.DEFAULT_PASSWORD }}
+          envkey_ANALYSIS_PASSWORD: ${{ secrets.ANALYSIS_PASSWORD }}
           envkey_LADDR_DB_USER: ${{ secrets.LADDR_DB_USER }}
           envkey_LADDR_DB_PASS: ${{ secrets.LADDR_DB_PASS }}
           envkey_FERNET_KEY: ${{ secrets.FERNET_KEY }}
