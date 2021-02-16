@@ -23,4 +23,7 @@ cfp_create_schema <- function(schema_name) {
   cfp_execute(
     glue("CREATE SCHEMA IF NOT EXISTS {schema_name} AUTHORIZATION {Sys.getenv('DEFAULT_USER')};")
   )
+  cfp_execute(
+    glue("GRANT SELECT ON ALL TABLES IN SCHEMA {schema_name} TO analysis;")
+  )    
 }
