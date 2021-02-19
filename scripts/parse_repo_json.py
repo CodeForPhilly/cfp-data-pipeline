@@ -28,6 +28,7 @@ def main():
                 print("Skipping ", proj_data["data"]["id"], code_url)
             else:
                 print(code_url)
+                code_url = code_url.replace("https://github.com/", "")
                 github_list.append(code_url)
 
         except Exception as ex:

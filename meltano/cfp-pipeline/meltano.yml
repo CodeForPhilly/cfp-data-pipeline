@@ -1,5 +1,5 @@
 version: 1
-send_anonymous_usage_stats: true
+send_anonymous_usage_stats: false
 project_id: 45da6c57-af78-4ac6-8e0c-d26e914bb9e5
 plugins:
   extractors:
@@ -14,7 +14,59 @@ plugins:
     - state
     config:
       access_token: $TAP_GITHUB_ACCESS_TOKEN
-      repository: https://github.com/mheadd/philly-jazz-app https://github.com/louiedog98/phillyBikeThefts https://github.com/CityOfPhiladelphia/arc-console https://github.com/CfABrigadePhiladelphia/CyclePhilly-iOS-app https://github.com/philasdbudget/philasdbudget https://github.com/codeforamerica/councilmatic https://github.com/corydissinger/geotrellis-transit https://github.com/CfABrigadePhiladelphia/philly-urban-agriculture https://github.com/JarvusInnovations/GateKeeper https://github.com/atheken/Gtfs2Sqlite https://github.com/jimRsmiley/septa-regional-rail-crime-heatmap https://github.com/csharpie/kiqstnd https://github.com/jimRsmiley/phila-construction-permit-heatmap https://github.com/pekasus/CAC-open-climate-tracker https://github.com/AnalyticalGraphicsInc/OpenPhillyGlobe https://github.com/plusjeff/phl-bike-thefts https://github.com/davewalk/phl-crime-mapper https://github.com/chap19150/Penndot-Traffic-Cameras-API https://github.com/mheadd/schooldata-api https://github.com/flibbertigibbet/philly-sanitation https://github.com/joepetrini/bike-counter https://github.com/davewalk/philly-hoods https://github.com/PlantSwapr/PlantSwapr.git https://github.com/PhillyHealthDataRepo https://github.com/joshmarcus/philly_school_accessibility https://github.com/johnsons531/openaccessphilly-oldsite https://github.com/ReclaimPhilly https://github.com/JarvusInnovations/SeptaMobi https://github.com/jmealo/SafestWay https://github.com/SlateFoundation https://github.com/SolarSunflowerProject https://github.com/amberheilman/StationDown https://github.com/sheltr https://github.com/UnlockedLab/unlockphilly https://github.com/CfABrigadePhiladelphia/WhatsGoingOn https://github.com/jimRsmiley/what-hood https://github.com/HarrisRobin/AddictiveScience https://github.com/bennovack/prescription-drug-guide https://github.com/CodeForPhilly/asap-mobile https://github.com/theONEdotnet/Alexa-Skill-about-Philly.git https://github.com/Anti-Gerrymandering https://github.com/BelieveAcheive https://github.com/pherman09/BlockIQ/ https://github.com/CodeForPhilly/cfpSlackMeetupSlashCommand https://github.com/CodeForPhilly/chime https://github.com/chorebox-team/chorebox https://github.com/mheadd/civic-responsibility-api https://github.com/CodeForPhilly/partnerships https://github.com/HarvestHub/GardenHub https://github.com/CodeForPhilly/prevpoint-forms https://github.com/lukemckinstry/11Corners https://github.com/codeforamerica/CutePets https://github.com/untitledfolder/cypherphilly https://github.com/CodeForPhilly/decentralized-data https://github.com/tfgit/Data-Sci-for-Civic-Hackers https://github.com/DaJour/database-management-system https://github.com/codeforphilly/cityx/ https://github.com/bguggs/EcocampHackathon2014 https://github.com/1nullpointer/elect-me https://github.com/davewalk/electronic_intern https://github.com/bayoadejare/energy_viz https://github.com/PrideNJellyfish/Happy2Help/blob/master/README.md https://github.com/TRys8/Female-Political-Representation-in-PA https://github.com/engine03/firecloud https://github.com/sophiaphillyqueen/foreign-language-learn https://github.com/chriscauley/garden_hero https://github.com/govmeeting/govmeeting https://github.com/hbthen3rd/foodr https://github.com/ebrelsford/v2v https://github.com/sophia-collaborations/hacker-resources https://github.com/Mac-lp3/Imminently-Dangerous https://github.com/streetlight/indego-usage https://github.com/JailJawn https://github.com/CfABrigadePhiladelphia/laddr https://github.com/Lever-age/leverage/ https://github.com/CodeForPhilly/home-repairs-for-seniors https://github.com/devsterr?tab=repositories https://github.com/lukemckinstry/matchmatchphilly https://github.com/AddictiveScience/megalithicTimeline https://github.com/CodeForPhilly/mentorphilly https://github.com/davetorok/MinimalBlueBikesPhilly https://github.com/modusplatform https://github.com/openplans/myphillyrising/ https://github.com/mflamb/my-brothers-keeper https://github.com/codeforphilly/my-ep https://github.com/J-LAB https://github.com/CodeForPhilly/neargreen https://github.com/yurykorzun/notinphilly https://github.com/OSCAV https://github.com/Open-Seat-Philly/open-seat https://github.com/osmp2015 https://github.com/flibbertigibbet/opentripplanner-mobile-site https://github.com/CfABrigadePhiladelphia/OpenTripPlanner https://github.com/TechnologyRiff/Fair-Funding https://github.com/CfABrigadePhiladelphia/patco-gtfs https://github.com/CodeForPhilly/paws-data-pipeline https://github.com/CfABrigadePhiladelphia/PGW-digs https://github.com/maneesha/phila_city_council https://github.com/TRys8/Energy-Benchmarking-Philadelphia-Muni-Buildings.git https://github.com/fulldecent/philadelphia-traffic-court-rtk https://github.com/CfABrigadePhiladelphia/sustainability-tour https://github.com/anmins/Philly-311-Dashboard https://github.com/shalperin/philly-bike-share-android https://github.com/davisshaver/phillydrinktax https://github.com/csskfulton/PhillyPoliceDroid https://github.com/JohnYagecic/PhillyRenewablesDashboard https://github.com/CodeForPhilly/philly-sample-ballots https://github.com/mjumbewu/phillytranspo_art/ https://github.com/CfABrigadePhiladelphia/philly-vote-check https://github.com/ESultanik/ZoningMaps https://github.com/CfABrigadePhiladelphia/PhillyDirections https://github.com/tswanson/phlAddrParse https://github.com/phlask https://github.com/ishbobzalimar/PPR-Computer-Labs-Check-In-Test1 https://github.com/CodeForPhilly/prevpoint-forms https://github.com/CodeForPhilly/prevention-point https://github.com/cognoma/cognoma https://github.com/CodeForPhilly/quest-budget-game https://github.com/mcgrogan91/RCOEngagement https://github.com/CfABrigadePhiladelphia/homeless-services https://github.com/mattschaff/phillyresourcemap https://github.com/grahamalama/school_budget_aggregator https://github.com/CfABrigadePhiladelphia/School-Needs-Board https://github.com/CfABrigadePhiladelphia/schoolbudget.phl.io https://github.com/grahamalama/sepa211scraper https://github.com/CfABrigadePhiladelphia/SEPTA-RT https://github.com/patmaiden/septa-ninja https://github.com/moradology/social-vote https://github.com/christophernies/Stormfighter https://github.com/CfABrigadePhiladelphia/StreetParkingPhiladelphia.git https://github.com/cityballots https://github.com/ssuffian/comphonemploy https://github.com/joedougherty/tokenFinder https://github.com/clsphila/recordlib https://github.com/ptvirgo/trashinator-django https://github.com/crsmyz/pa-hospital-finder https://github.com/dmiddlecamp/VagueRouter https://github.com/mattschaff/VibeDetector https://github.com/aaronclong/volunteer-generator https://github.com/ppierdo/Voter-Turnout-Maps.git https://github.com/spencersnygg/VoteWise https://github.com/timwis/philly-ward-leaders https://github.com/christophernies/watchSEPTA https://github.com/summer-of-open-source/wheel-chair-accessible-google-maps https://github.com/CodeForPhilly/stately https://github.com/yadaguru/yadaguru-app/wiki/Yadaguru-Dev-Environment-Setup
+      repository: mheadd/philly-jazz-app louiedog98/phillyBikeThefts CityOfPhiladelphia/arc-console
+        CfABrigadePhiladelphia/CyclePhilly-iOS-app philasdbudget/philasdbudget codeforamerica/councilmatic
+        corydissinger/geotrellis-transit CfABrigadePhiladelphia/philly-urban-agriculture
+        JarvusInnovations/GateKeeper atheken/Gtfs2Sqlite jimRsmiley/septa-regional-rail-crime-heatmap
+        csharpie/kiqstnd jimRsmiley/phila-construction-permit-heatmap pekasus/CAC-open-climate-tracker
+        AnalyticalGraphicsInc/OpenPhillyGlobe plusjeff/phl-bike-thefts davewalk/phl-crime-mapper
+        chap19150/Penndot-Traffic-Cameras-API mheadd/schooldata-api flibbertigibbet/philly-sanitation
+        joepetrini/bike-counter davewalk/philly-hoods PlantSwapr/PlantSwapr.git PhillyHealthDataRepo
+        joshmarcus/philly_school_accessibility johnsons531/openaccessphilly-oldsite
+        ReclaimPhilly JarvusInnovations/SeptaMobi jmealo/SafestWay SlateFoundation
+        SolarSunflowerProject amberheilman/StationDown sheltr UnlockedLab/unlockphilly
+        CfABrigadePhiladelphia/WhatsGoingOn jimRsmiley/what-hood HarrisRobin/AddictiveScience
+        bennovack/prescription-drug-guide CodeForPhilly/asap-mobile theONEdotnet/Alexa-Skill-about-Philly.git
+        Anti-Gerrymandering BelieveAcheive pherman09/BlockIQ/ CodeForPhilly/cfpSlackMeetupSlashCommand
+        CodeForPhilly/chime chorebox-team/chorebox mheadd/civic-responsibility-api
+        CodeForPhilly/partnerships HarvestHub/GardenHub CodeForPhilly/prevpoint-forms
+        lukemckinstry/11Corners codeforamerica/CutePets untitledfolder/cypherphilly
+        CodeForPhilly/decentralized-data tfgit/Data-Sci-for-Civic-Hackers DaJour/database-management-system
+        codeforphilly/cityx/ bguggs/EcocampHackathon2014 1nullpointer/elect-me davewalk/electronic_intern
+        bayoadejare/energy_viz PrideNJellyfish/Happy2Help/blob/master/README.md TRys8/Female-Political-Representation-in-PA
+        engine03/firecloud sophiaphillyqueen/foreign-language-learn chriscauley/garden_hero
+        govmeeting/govmeeting hbthen3rd/foodr ebrelsford/v2v sophia-collaborations/hacker-resources
+        Mac-lp3/Imminently-Dangerous streetlight/indego-usage JailJawn CfABrigadePhiladelphia/laddr
+        Lever-age/leverage/ CodeForPhilly/home-repairs-for-seniors devsterr?tab=repositories
+        lukemckinstry/matchmatchphilly AddictiveScience/megalithicTimeline CodeForPhilly/mentorphilly
+        davetorok/MinimalBlueBikesPhilly modusplatform openplans/myphillyrising/ mflamb/my-brothers-keeper
+        codeforphilly/my-ep J-LAB CodeForPhilly/neargreen yurykorzun/notinphilly OSCAV
+        Open-Seat-Philly/open-seat osmp2015 flibbertigibbet/opentripplanner-mobile-site
+        CfABrigadePhiladelphia/OpenTripPlanner TechnologyRiff/Fair-Funding CfABrigadePhiladelphia/patco-gtfs
+        CodeForPhilly/paws-data-pipeline CfABrigadePhiladelphia/PGW-digs maneesha/phila_city_council
+        TRys8/Energy-Benchmarking-Philadelphia-Muni-Buildings.git fulldecent/philadelphia-traffic-court-rtk
+        CfABrigadePhiladelphia/sustainability-tour anmins/Philly-311-Dashboard shalperin/philly-bike-share-android
+        davisshaver/phillydrinktax csskfulton/PhillyPoliceDroid JohnYagecic/PhillyRenewablesDashboard
+        CodeForPhilly/philly-sample-ballots mjumbewu/phillytranspo_art/ CfABrigadePhiladelphia/philly-vote-check
+        ESultanik/ZoningMaps CfABrigadePhiladelphia/PhillyDirections tswanson/phlAddrParse
+        phlask ishbobzalimar/PPR-Computer-Labs-Check-In-Test1 CodeForPhilly/prevpoint-forms
+        CodeForPhilly/prevention-point cognoma/cognoma CodeForPhilly/quest-budget-game
+        mcgrogan91/RCOEngagement CfABrigadePhiladelphia/homeless-services mattschaff/phillyresourcemap
+        grahamalama/school_budget_aggregator CfABrigadePhiladelphia/School-Needs-Board
+        CfABrigadePhiladelphia/schoolbudget.phl.io grahamalama/sepa211scraper CfABrigadePhiladelphia/SEPTA-RT
+        patmaiden/septa-ninja moradology/social-vote christophernies/Stormfighter
+        CfABrigadePhiladelphia/StreetParkingPhiladelphia.git cityballots ssuffian/comphonemploy
+        joedougherty/tokenFinder clsphila/recordlib ptvirgo/trashinator-django crsmyz/pa-hospital-finder
+        dmiddlecamp/VagueRouter mattschaff/VibeDetector aaronclong/volunteer-generator
+        ppierdo/Voter-Turnout-Maps.git spencersnygg/VoteWise timwis/philly-ward-leaders
+        christophernies/watchSEPTA summer-of-open-source/wheel-chair-accessible-google-maps
+        CodeForPhilly/stately yadaguru/yadaguru-app/wiki/Yadaguru-Dev-Environment-Setup
+    select:
+    - '!collaborators.*'
+    - '!team_members.*'
+    - '!team_memberships.*'
+    - '!teams.*'
+    - '*.*'
   - name: tap-slack
     namespace: tap_slack
     variant: singer-io
