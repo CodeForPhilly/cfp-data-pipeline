@@ -40,6 +40,8 @@ plugins:
       private_channels: false
       join_public_channels: true
       exclude_archived: true
+    select:
+    - '!user_groups.*'
   loaders:
   - name: target-csv
     variant: singer-io
