@@ -42,6 +42,7 @@ plugins:
       exclude_archived: true
     select:
     - '!user_groups.*'
+    - '*.*'
   loaders:
   - name: target-csv
     variant: singer-io
