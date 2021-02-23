@@ -24,6 +24,7 @@ plugins:
     - '!team_members.*'
     - '!team_memberships.*'
     - '!teams.*'
+    - '!issue_milestones.*'
     - '*.*'
   - name: tap-slack
     namespace: tap_slack
