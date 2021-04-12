@@ -16,6 +16,7 @@ library(tidyverse)
 library(lubridate)
 library(dbplyr)
 library(assertthat)
+library(cfpr)
 
 # use http v1.1, since v2 throws errors in docker
 httr::set_config(httr::config(http_version = 2))
@@ -260,10 +261,10 @@ users <-
 ## Create DB Tables
 
 ```{r}
-cfp_create_schema("slack")
-cfp_create_table(channels, "slack.channels")     # creates slack_channels table
-cfp_create_table(messages, "slack.messages")
-cfp_create_table(users, "slack.users")
+cfp_create_schema("tidyslack")
+cfp_create_table(channels, "tidyslack.channels")     # creates slack_channels table
+cfp_create_table(messages, "tidyslack.messages")
+cfp_create_table(users, "tidyslack.users")
 ```
 
 

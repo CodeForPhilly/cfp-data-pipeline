@@ -13,6 +13,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(cfpr)
 
 preview <- function(df, n = 5) df %>% head(n) %>% collect() %>% View()
 

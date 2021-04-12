@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(tidyr)
 library(snakecase)
+library(cfpr)
 ```
 
 
@@ -21,7 +22,7 @@ prefix_names <- function(tbl, prefix) {
 
 tbl_view_project_tags <-
   cfp_laddr_tag_items() %>%
-  filter(ContextClass == "Laddr\\Project") %>%
+  filter(ContextClass %LIKE% "Laddr%Project") %>%
   select(-ContextClass, ProjectID = ContextID) %>%
   rename_at(vars(-TagID, -ProjectID), ~paste0("TagItem", .)) %>%
   inner_join(
@@ -41,5 +42,6 @@ tbl_view_project_tags <-
 ```
 
 ```{r}
-tbl_view_project_tags %>% cfp_create_table("views.laddr_project_tags")
+cfp_create_schema("views")
+tbl_view_project_tags %>% cfp_create_table2("views.laddr_project_tags")
 ```
