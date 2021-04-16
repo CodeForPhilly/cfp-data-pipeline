@@ -10,12 +10,13 @@ services:
             - "5678:5432"
     airflow:
         build:
-            context: ./airflow
+            context: .
         env_file:
           - .env
         environment:
                 - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql://${DEFAULT_USER}:${DEFAULT_PASSWORD}@postgres:5432/airflow
                 - AIRFLOW_CONN_POSTGRES_DEFAULT=postgresql://${DEFAULT_USER}:${DEFAULT_PASSWORD}@postgres:5432/datawarehouse
+                - CFP_WAREHOUSE_URI=snowflake://${CFP_USER}:${CFP_PASSWORD}@${CFP_HOST}:${CFP_PORT}/${CFP_DATABASE}?warehouse=${CFP_WAREHOUSE}&role=${CFP_ROLE}
                 - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
                 - AIRFLOW__WEBSERVER__SECRET_KEY=${SECRET_KEY}
                 - MELTANO_PROJECT_ROOT=${MELTANO_PROJECT_ROOT}
@@ -27,9 +28,6 @@ services:
             /bin/bash -c "
                 # Wait for PG
                 sleep 5
-
-                # Copy in .Rprofile to user's home dir
-                cp .Rprofile ~/
 
                 # Clean up pid
                 rm -f airflow-webserver.pid
@@ -49,9 +47,6 @@ services:
                 # Set up datalake db & views schema
                 python3 demo-setup/datawarehouse_setup.py
 
-                # have meltano install dependencies in the virtualenv
-                cd ${MELTANO_PROJECT_ROOT} && /usr/local/venv/meltano/bin/meltano install
-
                 # Start airflow
                 airflow scheduler &
             	  airflow webserver
@@ -67,12 +62,12 @@ services:
                 - ./meltano:/usr/local/meltano
         ports:
             - "8080:8080"
-    meltano:
-        image: meltano/meltano:latest-python3.8
-        depends_on:
-          - postgres
-        volumes:
-          - .:/usr/local/share/cfp
-        ports:
-          - "5000:5000"
-        working_dir: /usr/local/share/cfp/meltano/cfp-pipeline
+#    meltano:
+#        image: meltano/meltano:latest-python3.8
+#        depends_on:
+#          - postgres
+#        volumes:
+#          - .:/usr/local/share/cfp
+#        ports:
+#          - "5000:5000"
+#        working_dir: /usr/local/share/cfp/meltano/cfp-pipeline
