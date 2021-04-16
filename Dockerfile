@@ -26,8 +26,9 @@ RUN dpkg -i snowflake-odbc.deb \
 
 
 # Create venv for meltano, install taps in virtualenvs ----
+ENV MELTANO_PROJECT_ROOT=/usr/local/meltano/cfp-pipeline
 
-ADD meltano/cfp-pipeline /usr/local/meltano/cfp-pipeline
+ADD meltano/cfp-pipeline ${MELTANO_PROJECT_ROOT}
 
 RUN virtualenv -p python3 /usr/local/venv/meltano
 RUN . /usr/local/venv/meltano/bin/activate \
