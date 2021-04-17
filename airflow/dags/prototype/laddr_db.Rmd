@@ -14,6 +14,7 @@ library(tidyverse)
 library(dbplyr)
 library(dbpath)
 library(glue)
+library(cfpr)
 
 DEBUG = FALSE
 
@@ -25,9 +26,7 @@ url <- glue("mysql://{Sys.getenv('LADDR_DB_USER')}:{Sys.getenv('LADDR_DB_PASS')}
 src_con <- DBI::dbConnect(dbpath(url))
 
 # Create laddr schema in datawarehouse
-cfp_execute(
-  glue("CREATE SCHEMA IF NOT EXISTS laddr AUTHORIZATION {Sys.getenv('DEFAULT_USER')};")
-  )
+cfp_create_schema("LADDR")
 ```
 
 
@@ -50,10 +49,9 @@ tbl_people <-
 
 
 ```{r}
-tbl_projects %>% cfp_create_table("laddr.projects")
-tbl_project_updates %>% cfp_create_table("laddr.project_updates")
-tbl_tags %>% cfp_create_table("laddr.tags")
-tbl_tag_items %>% cfp_create_table("laddr.tag_items")
-tbl_people %>% cfp_create_table("laddr.people")
-
+tbl_projects %>% cfp_create_table2("laddr.projects")
+tbl_project_updates %>% cfp_create_table2("laddr.project_updates")
+tbl_tags %>% cfp_create_table2("laddr.tags")
+tbl_tag_items %>% cfp_create_table2("laddr.tag_items")
+tbl_people %>% cfp_create_table2("laddr.people")
 ```

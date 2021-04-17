@@ -25,6 +25,7 @@ plugins:
     - '!team_memberships.*'
     - '!teams.*'
     - '!issue_milestones.*'
+    - '!commits.*'
     - '*.*'
   - name: tap-slack
     namespace: tap_slack
@@ -80,24 +81,24 @@ plugins:
   - name: target-snowflake-github
     inherit_from: target-snowflake
     config:
-      schema: GITHUB
+      schema: GITHUB_STAGING
   - name: target-snowflake-slack
     inherit_from: target-snowflake
     config:
       schema: SLACK
 schedules:
-- name: slack-to-postgres
-  extractor: tap-slack
-  loader: target-postgres-slack
-  transform: skip
-  interval: '@daily'
-  start_date: 2021-01-08 00:00:00
-- name: github-to-postgres
-  extractor: tap-github
-  loader: target-postgres-github
-  transform: skip
-  interval: '@daily'
-  start_date: 2021-01-15 18:41:47.984720
+#- name: slack-to-postgres
+#  extractor: tap-slack
+#  loader: target-postgres-slack
+#  transform: skip
+#  interval: '@daily'
+#  start_date: 2021-01-08 00:00:00
+#- name: github-to-postgres
+#  extractor: tap-github
+#  loader: target-postgres-github
+#  transform: skip
+#  interval: '@daily'
+#  start_date: 2021-01-15 18:41:47.984720
 - name: slack-to-snowflake
   extractor: tap-slack
   loader: target-snowflake-slack
