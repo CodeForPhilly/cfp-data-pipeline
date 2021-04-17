@@ -64,7 +64,7 @@ services:
             - postgres
         volumes:
                 - ./airflow:/usr/local/airflow
-                - ./meltano:/usr/local/meltano
+                - ${PWD}/meltano/cfp-pipeline/meltano.yml:/usr/local/meltano/cfp-pipeline/meltano.yml
         ports:
             - "8080:8080"
     meltano:
